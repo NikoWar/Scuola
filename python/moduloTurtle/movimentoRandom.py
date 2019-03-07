@@ -11,11 +11,13 @@ n1=1    #dihiarazione variabili
 n2=1
 n3=0
 while(cnt<i):   #while per calcolare la sequenza
-    t.forward(1)   #disegna in avanti
+    t.forward(10)   #disegna in avanti
     if(random.random()<0.5):
         t.left(90)      #gira di 90 gradi a sx
+        t.color("red")  #cambia colore in base a dove gira
     else:
         t.right(90)     #gira di 90 gradi a dx
+        t.color("green")
     cnt+=1
 
 t.end_fill()    #smette di disegnare
