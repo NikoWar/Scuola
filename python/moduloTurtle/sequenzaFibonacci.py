@@ -12,7 +12,7 @@
 
 from turtle import *
 t=Turtle()  #instanzio oggetto Turtle
-print("Qaunti numeri della sequenza vuoi calcolare?")
+print("Quanti numeri della sequenza vuoi calcolare?")
 i=int(input())
 t.begin_poly()  #inizia a disegnare
 cnt=0
@@ -22,8 +22,9 @@ n3=0
 
 while(cnt<i):   #while per calcolare la sequenza
     n3=n1+n2
-    n2=n3
+    print(n3)
     n1=n2
+    n2=n3
     t.forward(n3)   #disegna in avanti
     t.left(90)      #gira di 90 gradi
     cnt+=1
