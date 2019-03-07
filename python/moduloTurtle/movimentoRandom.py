@@ -7,9 +7,7 @@ print("Quante volte vuoi svoltare?")
 i=int(input())
 t.begin_poly()  #inizia a disegnare
 cnt=0
-n1=1    #dihiarazione variabili
-n2=1
-n3=0
+
 while(cnt<i):   #while per calcolare la sequenza
     t.forward(10)   #disegna in avanti
     if(random.random()<0.5):
