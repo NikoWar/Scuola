@@ -3,36 +3,36 @@ import random
 
 #Nicolò Guerra 4AROB
 
-WIDTH=800           #global variables setup
+WIDTH=800           #inizializzazione delle variabili
 HEIGHT=600
 XSTART=-WIDTH/2
-MAXRAND=30
-GRADES=90
-MULTIPLIER=2       #the higher will be the multiplier,the less space will be between turtles
+MAXRAND=20
+GRADI=90
+MOLTIPLICATORE=2       
 toggle,cont=0,1
 
 turtle.title("TURTLE RACE")
 
-def calculateY(padding,toggle,cont):        #function to calculate Y value of each turtle
+def calculateY(dist,toggle,cont):        
 
     origin = 0
 
     if toggle==0:
-        y=origin + padding*cont
+        y=origin + dist*cont
         toggle = 1
     else:
-        y=origin - padding*cont
+        y=origin - dist*cont
         toggle = 0
     
     cont+=1
 
     return y,toggle,cont
 
-def forward(vector,players):                #function to calculate the distance that each turtle will ride 
+def forward(vettore,players):                
     cont=0
     stop=False
     while True:
-        for i in vector:
+        for i in vettore:
             if i.xcor() >= WIDTH//2:
                 vincitore=cont
                 stop=True
@@ -47,13 +47,13 @@ def forward(vector,players):                #function to calculate the distance 
     return (cont%int(players))
 
 
-def drawContours():                 #function to draw the start and arrive lines
+def disegnaContorni():                 #funzione per disegnare partenza e arrivo
     drawer=turtle.Turtle()
     drawer.speed(0)
     drawer.up()
     drawer.goto(XSTART,-HEIGHT/2)
     drawer.down()
-    drawer.left(GRADES)
+    drawer.left(GRADI)
     drawer.forward(HEIGHT)
     drawer.up()
     drawer.goto(WIDTH/2,-HEIGHT/2)
@@ -64,22 +64,21 @@ def drawContours():                 #function to draw the start and arrive lines
 
 
 number=input("inserisci il numero di partecipanti: ")
-#number="10"
-vector = []
-padding=HEIGHT//(int(number)*MULTIPLIER)     #distance for the first turtle from the origin (0), will be used to calculate y coordinate
+vettoreTurte = []
+dist=HEIGHT//(int(number)*MOLTIPLICATORE)     #distanza delle tartarughe l'una dall'altra
 
-drawContours()
+disegnaContorni()
 
 for i in range(0,int(number)):
-    vector.append(turtle.Turtle())
+    vettoreTurte.append(turtle.Turtle())
 
-for i in vector:                                        #setup in the start position for each turtle 
+for i in vettoreTurte:                                        #posizionamento turtle
     i.penup()
     i.speed(10)
-    y,toggle,cont = calculateY(padding,toggle,cont)
+    y,toggle,cont = calculateY(dist,toggle,cont)
     i.goto((XSTART),y)
 
-vincitore=forward(vector,number)
+vincitore=forward(vettoreTurte,number)
 
 print("ha vinto la tartaruga con indice " + str(vincitore))     
 
