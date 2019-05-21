@@ -8,6 +8,10 @@ c.connect((HOST, PORT))
 
 while True:
     text = input()
+    if text == "stop":
+        break
     c.sendall(text.encode())
-    c.recv(4096)
+    data=c.recv(4096)
+    print(data.decode())
+    
 c.close()

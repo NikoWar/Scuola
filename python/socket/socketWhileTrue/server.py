@@ -11,6 +11,8 @@ print("Connect to "+ str(addr))
 while True:
     data=con.recv(4096)
     print(data.decode())
-    con.sendall(data)
+    if data.decode() == "stop":
+        break
+    con.sendall(input().encode())
 
 s.close()
