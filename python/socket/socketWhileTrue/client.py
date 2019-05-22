@@ -1,6 +1,6 @@
 import socket as sck
 
-HOST = "localhost"
+HOST = "192.168.10.53"
 PORT = 1984
 
 c = sck.socket(sck.AF_INET, sck.SOCK_STREAM)
