@@ -29,21 +29,21 @@ while True:   #while per calcolare la sequenza
     print(data.decode())
     comando=data.decode()
     if(len(comando))>1:
-        con.sendall("Inserisci una stringa per volta".encode())
+        con.sendall(("COORD: "+str(t.xcor())+", "+str(t.ycor())).encode())
     elif comando=='f':  #if annidate per controllare la turtle
         t.forward(passo)
-        con.sendall("(t.xcor+t.ycor)".encode())
+        con.sendall(("COORD: "+str(t.xcor())+", "+str(t.ycor())).encode())
     elif comando=='r':
         t.right(angolo)
         t.forward(passo)
-        con.sendall("(t.xcor+t.ycor)".encode())
+        con.sendall(("COORD: "+str(t.xcor())+", "+str(t.ycor())).encode())
     elif comando=='l':
         t.left(angolo)
         t.forward(passo)
-        con.sendall("(t.xcor+t.ycor)".encode())
+        con.sendall(("COORD: "+str(t.xcor())+", "+str(t.ycor())).encode())
     elif comando=='b':
         t.back(passo)
-        con.sendall("(t.xcor+t.ycor)".encode())
+        con.sendall(("COORD: "+str(t.xcor())+", "+str(t.ycor())).encode())
     elif comando=='e':
         break
     else:
