@@ -7,44 +7,42 @@ import sqlite3
 
 app = Flask(__name__)
 
+def check_password(db_password, user_password):
+    return db_password == user_password
+
 def validate(username, password):
     completion = False
-    with sqlite3.connect('static/db.db') as con:    #mantiene in memoria quest'oggetto solo durante il tempostrettamente necessario a compiere tutte le operazioni sull'oggetto
-        cur = con.cursor()
-        cur.execute("SELECT * FROM Users")
-        rows = cur.fetchall()
+    with sqlite3.connect('static/db.db') as con:    #mantiene in memoria quest'oggetto solo durante il tempo strettamente necessario a compiere tutte le operazioni sull'oggetto
+        cur = con.cursor()                          #creo il cursore per navigareil db
+        cur.execute("SELECT * FROM Users")          #istruzione SQL
+        rows = cur.fetchall()                       #esecuzione query
         for row in rows:
-            dbUser = row[0]
-            dbPass = row[1]
+            dbUser = row[0]                         #riga 0 contiene l'username
+            dbPass = row[1]                         #riga 1 contiene la password
             if dbUser == username:
-                completion = check_password(dbPass, password)
-    return completion
+                completion = check_password(dbPass, password)   #True/False
+    return completion           
 
 def insertDB(username, password):
     with sqlite3.connect('./static/db.db') as con:
         cur = con.cursor()
         try:
-            cur.execute(f'INSERT INTO USERS (USERNAME, PASSWORD) VALUES ("{username}", "{password}")')
+            cur.execute(f'INSERT INTO USERS (USERNAME, PASSWORD) VALUES ("{username}", "{password}")')  #insert sql
         except Exception:
             pass
-        
-
-def check_password(hashed_password, user_password):
-    return hashed_password == user_password
-
 
 @app.route('/', methods=['GET', 'POST'])
 def signInOrSignUp():
     error = None
-    if request.method == 'POST':
-        if request.form['submit_button'] == 'Log-In':
-            return redirect(url_for('login'))
+    if request.method == 'POST':                        #si usa il metodo POST
+        if request.form['submit_button'] == 'Log-In':   #if annidate per determinare su quale pagina venire reinderizzati
+            return redirect(url_for('login'))           
         elif request.form['submit_button'] == 'Sign-Up':
             return redirect(url_for('register'))
         else:
             pass # unknown
         
-    return render_template('index.html', error = error)
+    return render_template('index.html', error = error) #ritorna il template della pagina HTML (posizione e errori)
 
 
 @app.route('/login', methods=['GET', 'POST'])    #lo '/' indica che si trova nella prima pagina
