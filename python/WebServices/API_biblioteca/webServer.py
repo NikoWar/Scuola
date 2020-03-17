@@ -46,7 +46,7 @@ def api_id():
     if 'title' in request.args:
         title = request.args
     else:
-        return "Error: No id field provided. Please specify an id."
+        return "Error: No title field provided. Please specify a title."
     
     results = []
 
