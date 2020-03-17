@@ -30,6 +30,7 @@ def api_all():
 @app.route('/api/v1/resources/books', methods=['GET'])
 def api_id():
     if 'id' in request.args:
+        print(request.args)
         id = int(request.args['id'])
     else:
         return "Error: No id field provided. Please specify an id."
@@ -42,9 +43,10 @@ def api_id():
     return jsonify(results)
 
 @app.route('/api/v1/resources/books', methods=['GET'])
-def api_id():
+def api_title():
     if 'title' in request.args:
-        title = request.args
+        print(request.args)
+        title = request.args['title']
     else:
         return "Error: No title field provided. Please specify a title."
     
@@ -92,3 +94,4 @@ if __name__== "__main__":   #chiamata al main "riciclabile"
         Cache-Control: max-age=0
 
         QUERY MODIFICATA
+    '''
