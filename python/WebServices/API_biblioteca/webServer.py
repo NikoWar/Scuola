@@ -1,22 +1,8 @@
 import flask
 from flask import request, jsonify
+import sqlite3
 
 app = flask.Flask(__name__)
-
-books = [
-{'id': 0,
-'title': 'Il nome della Rosa',
-'author': 'Umberto Eco',
-'year_published': '1980'},
-{'id': 1,
-'title': 'Il problema dei tre corpi',
-'author': 'Liu Cixin',
-'published': '2008'},
-{'id': 2,
-'title': 'Fondazione',
-'author': 'Isaac Asimov',
-'published': '1951'}
-]
 
 @app.route('/', methods=['GET'])
 def home():
@@ -25,39 +11,45 @@ def home():
 
 @app.route('/api/v1/resources/books/all', methods=['GET'])
 def api_all():
-    return jsonify(books)
+    return jsonify(cursor.execute(f"""
+    SELECT * 
+    FROM Books;
+    """))
 
 @app.route('/api/v1/resources/books', methods=['GET'])
 def api_id():
     if 'id' in request.args:
-        print(request.args)
         id = int(request.args['id'])
     else:
         return "Error: No id field provided. Please specify an id."
     
     results = []
-
-    for book in books:
-        if book['id'] == id:
-            results.append(book)
+    results.append(cursor.execute(f"""
+    SELECT id 
+    FROM Books
+    WHERE id == {id};
+    """))
     return jsonify(results)
 
 @app.route('/api/v1/resources/books', methods=['GET'])
 def api_title():
     if 'title' in request.args:
-        print(request.args)
-        title = request.args['title']
+        title = request.args
     else:
         return "Error: No title field provided. Please specify a title."
     
     results = []
 
-    for book in books:
-        if book['title'] == title:
-            results.append(book)
+    results.append(cursor.execute(f"""
+    SELECT title 
+    FROM Books
+    WHERE title == {title};
+    """))
     return jsonify(results)
 
 if __name__== "__main__":   #chiamata al main "riciclabile" 
+    sqliteConnection = sqlite3.connect('dbBooks.db')
+    cursor = sqliteConnection.cursor()
     app.run()
 
 
