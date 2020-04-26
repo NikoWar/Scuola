@@ -4,14 +4,19 @@
 
 from flask import Flask, render_template, redirect, url_for, request
 import sqlite3
+import hashlib
 
 app = Flask(__name__)
 
-def check_password(db_password, user_password):
-    return db_password == user_password
+def getHash(s):
+    m = hashlib.sha256()
+    m.update(s)
+    return m.hexdigest()
+
+def check_password(hashed_password, user_password):   #controllo password input hashata e password hashata sul db
+    return hashed_password == getHash(user_password)
 
 def validate(username, password):
-    completion = False
     with sqlite3.connect('static/db.db') as con:    #mantiene in memoria quest'oggetto solo durante il tempo strettamente necessario a compiere tutte le operazioni sull'oggetto
         cur = con.cursor()                          #creo il cursore per navigareil db
         cur.execute("SELECT * FROM Users")          #istruzione SQL
@@ -19,9 +24,8 @@ def validate(username, password):
         for row in rows:
             dbUser = row[0]                         #riga 0 contiene l'username
             dbPass = row[1]                         #riga 1 contiene la password
-            if dbUser == username:
-                completion = check_password(dbPass, password)   #True/False
-    return completion           
+            if dbUser == username:           
+                return check_password(dbPass, password)   #True/False        
 
 def insertDB(username, password):
     with sqlite3.connect('./static/db.db') as con:
@@ -49,11 +53,10 @@ def signInOrSignUp():
 def login():
     error = None
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        completion = validate(username, password)
-        if completion == False:
-            error = 'Invalid Credentials. Please try again.'
+        username = request.form['username']      
+        password = request.form['password']                 
+        if validate(username, password) == False:
+            error = 'Invalid Credentials. Please try again.'    #credenziali sbagliate
         else:
             return redirect(url_for('secret'))
 
@@ -65,7 +68,7 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        insertDB(username, password)
+        insertDB(username, password)            #inserisco credenziali nel db
 
     return render_template('register.html', error=error)
 
