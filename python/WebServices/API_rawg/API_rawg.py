@@ -1,6 +1,8 @@
 import flask
 import requests
 import sqlite3
+from PIL import Image
+from io import BytesIO
 
 URL = 'https://api.rawg.io/api/games?dates=2001-01-01,2001-12-31&ordering=-rating'
 
@@ -13,19 +15,24 @@ def getData(URL):
 
 def insertVideoGames(data):
     try:
-        sqlConn = sqlite3.connect('db_videogames.db')
+        sqlConn = sqlite3.connect('./db_videogames.db')
         cursor = sqlConn.cursor()
-
+        
         for d in data['results']:
+            if(d['background_image'] != None):
+                response = requests.get(url= d['background_image'])
+                img = Image.open(BytesIO(response.content))
+            
             cursor.execute(f'''INSERT INTO Videogames 
-                            (slug, name, playtime, released, background_image, rating, rating_top, ratings_count,
+                            (slug, name, playtime, released, background_image, image, rating, rating_top, ratings_count,
                             reviews_text_count, added, suggestions_count, id_videogame, score, reviews_count, saturated_color, dominant_color
                         ) VALUES 
                             ("{d['slug']}", 
                             "{d['name']}", 
                             "{d['playtime']}", 
                             "{d['released']}", 
-                            "{d['background_image']}", 
+                            "{d['background_image']}",
+                            "{img}",  
                             "{d['rating']}",
                             "{d['rating_top']}", 
                             "{d['ratings_count']}", 
@@ -38,48 +45,30 @@ def insertVideoGames(data):
                             "{d['saturated_color']}", 
                             "{d['dominant_color']}");''')
             sqlConn.commit()
+            
+    except sqlite3.Error as error:
+        print('Error: ' + str(error))
+    finally:
+        sqlConn.close()
+        print('DB caricato')
 
+def isLoad():
+    res = []
+    try:
+        sqlConn = sqlite3.connect('./db_videogames')
+        cursor = sqlConn.cursor()
+            
+        cursor.execute(f'''SELECT * FROM Videogames;''')
+        res = cursor.fetchall()
+              
     except sqlite3.Error as error:
         print('Error: ' + str(error))
     finally:
         sqlConn.close()
 
-    return 'Libro caricato'
-getData(URL)
-'''
-def insertBook():
+    return (len(res) == 0)
 
-        cursor.execute(f'INSERT INTO Videogames(slug, name, playtime, released, background_image, rating, rating_top, ratings_count,
-                        reviews_text_count, added, suggestions_count, id_videogame, score, reviews_count, saturated_color, dominant_color
-                        ) VALUES ("{title}", "{author}", "{published}");')
-        sqliteConn.commit()
-   
-
-    "id"	
-	"slug"	
-	"name"	
-	"playtime"	
-	"released"	
-	"background_image"	
-	"rating"	
-	"rating_top"	
-	"ratings_count"	
-	"reviews_text_count"	
-	"added"	
-	"suggestions_count"	
-	"id_videogame"	
-	"score"	
-	"reviews_count"	
-	"saturated_color"	
-	"dominant_color"
-
-    except sqlite3.Error as error:
-        print('Error: ' + error)
-    finally:
-        sqliteConn.close()
-
-    return 'Libro caricato'
-
-if __name__== "__main__":   #chiamata al main "riciclabile" 
-    app.run()
-'''
+if(not isLoad()):
+    print('DB già caricato')
+else:
+    getData(URL)
