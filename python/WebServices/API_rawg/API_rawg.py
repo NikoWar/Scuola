@@ -68,7 +68,46 @@ def isLoad():
 
     return (len(res) == 0)
 
+def printer(array, switch):
+    if (switch == 'CLASSIFICA'):
+        for n, a in enumerate(array):
+            print(f'POSIZIONE {n+1}: {a[0]}, VOTO: {a[1]}')
+    else:
+        for a in enumerate(array):
+            print(f'DATA DI RILASCIO  {a[1][1]}, NOME GIOCO: {a[1][0]}')
+
 if(not isLoad()):
     print('DB già caricato')
+    
+    while True:
+        scelta = int(input('0-> ESCI \n1->CLASSIFICA IN BASE AL VOTO\n2->IN ORDINE DI DATA DI USCITA CRESCENTE\n ------->'))
+        if (scelta == 0):
+            break
+        if (scelta == 1):
+            try:
+                sqlConn = sqlite3.connect('./db_videogames')
+                cursor = sqlConn.cursor()
+                    
+                cursor.execute(f'''SELECT name, rating FROM Videogames ORDER BY rating DESC;''')
+                res = cursor.fetchall()
+                printer(res, 'CLASSIFICA')
+
+            except sqlite3.Error as error:
+                print('Error: ' + str(error))
+            finally:
+                sqlConn.close()
+        if (scelta == 2):
+            try:
+                sqlConn = sqlite3.connect('./db_videogames')
+                cursor = sqlConn.cursor()
+                    
+                cursor.execute(f'''SELECT name, released FROM Videogames ORDER BY released ASC;''')
+                res = cursor.fetchall()
+                printer(res, 'DATA')
+
+            except sqlite3.Error as error:
+                print('Error: ' + str(error))
+            finally:
+                sqlConn.close()
 else:
     getData(URL)
